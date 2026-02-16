@@ -1,7 +1,17 @@
-# Tab accepts the inline autosuggestion
+# Enable auto-complete from history and syntax
+bleopt complete_auto_complete=1
+
+# Tab accepts inline autosuggestion or triggers completion
 ble-bind -m auto_complete -f TAB auto_complete/insert
 ble-bind -m auto_complete -f S-TAB auto_complete/cancel
 
-# Right/Left arrow cycles through completion candidates
-ble-bind -m complete -f right complete/insert
-ble-bind -m complete -f left complete/cancel
+# TAB accepts the current completion in the menu (instead of cycling)
+ble-bind -m menu_complete -f TAB menu_complete/accept
+
+# Arrow keys navigate through completion options (default behavior)
+# Right arrow accepts inline suggestion
+ble-bind -m auto_complete -f right auto_complete/insert-on-end
+
+# TAB in normal mode triggers completion (works for both emacs and vi modes)
+ble-bind -m emacs -f TAB complete
+ble-bind -m vi_imap -f TAB complete
