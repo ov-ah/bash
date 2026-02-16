@@ -1,0 +1,32 @@
+# Case-insensitive tab completion
+set completion-ignore-case on
+
+# Treat hyphens and underscores as equivalent
+set completion-map-case on
+
+# Show all matches on single tab press (no double-tap)
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+
+# Color completions by file type (like ls)
+set colored-stats on
+set colored-completion-prefix on
+
+# Append file-type indicator (/ for dirs, etc.)
+set visible-stats on
+
+# Don't page completions
+set completion-query-items 200
+set page-completions off
+
+# Partial completion before cycling
+set menu-complete-display-prefix on
+
+# Tab: accept inline suggestion (handled by ble.sh)
+# Right/Left arrow: cycle through completions
+"\e[C": menu-complete
+"\e[D": menu-complete-backward
+
+# Up/Down arrow: search history by prefix
+"\e[A": history-search-backward
+"\e[B": history-search-forward

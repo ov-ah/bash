@@ -1,0 +1,7 @@
+# Tab accepts the inline autosuggestion
+ble-bind -m auto_complete -f TAB auto_complete/insert
+ble-bind -m auto_complete -f S-TAB auto_complete/cancel
+
+# Right/Left arrow cycles through completion candidates
+ble-bind -m complete -f right complete/insert
+ble-bind -m complete -f left complete/cancel
