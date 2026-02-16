@@ -3,19 +3,13 @@
 __prompt_git() {
     local branch
     branch=$(git symbolic-ref --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null) || return
-    local status=""
     local flags=""
 
-    # Check for uncommitted changes
     git diff --quiet 2>/dev/null || flags+="*"
-    # Check for staged changes
     git diff --cached --quiet 2>/dev/null || flags+="+"
-    # Check for untracked files
     [[ -n $(git ls-files --others --exclude-standard 2>/dev/null) ]] && flags+="?"
-    # Check for stashes
     git rev-parse --verify refs/stash &>/dev/null && flags+='$'
 
-    # Ahead/behind upstream
     local upstream
     upstream=$(git rev-parse --abbrev-ref '@{upstream}' 2>/dev/null)
     if [[ -n $upstream ]]; then
@@ -26,17 +20,20 @@ __prompt_git() {
         [[ $behind -gt 0 ]] && flags+="↓${behind}"
     fi
 
-    [[ -n $flags ]] && status=" ${flags}"
-    printf ' \[\e[38;2;254;128;25m\]%s%s\[\e[0m\]' "${branch}" "${status}"
+    [[ -n $flags ]] && flags=" ${flags}"
+    # \001/\002 are the raw codes behind \[/\] — required inside command substitution
+    printf ' \001\e[38;2;254;128;25m\002%s%s\001\e[0m\002' "${branch}" "${flags}"
 }
+
+__prompt_cmd() {
+    __prompt_exit=$?
+}
+
+PROMPT_COMMAND='__prompt_cmd'
 
 __prompt_exit_code() {
-    local exit=$?
-    [[ $exit -ne 0 ]] && printf ' \[\e[38;2;251;73;52m\]%s\[\e[0m\]' "${exit}"
-    return $exit
+    [[ $__prompt_exit -ne 0 ]] && printf ' \001\e[38;2;251;73;52m\002%s\001\e[0m\002' "${__prompt_exit}"
 }
-
-PROMPT_COMMAND='__prompt_last_exit=$?'
 
 PS1='\[\e[38;2;184;187;38m\]\u\[\e[0m\] '      # green user
 PS1+='\[\e[38;2;250;189;47m\]\h\[\e[0m\] '      # yellow host
